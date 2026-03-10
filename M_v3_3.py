@@ -130,7 +130,7 @@ while True:
 
         # --- [로직 1: 정각/30분 정기 알림] ---
         # 테스트를 위해 분 조건을 [0, 30] 외에 추가할 수 있습니다.
-        if now.minute in [0, 30] and current_hm != last_sent_hm:
+        if now.minute in [0, 30,7,8,9,10,11,12,13,14] and current_hm != last_sent_hm:
             status = f"""📊 **[실시간 자산 리포트 - {current_hm}]**
 {individual_details}
 💰 **현재 총 자산**: `{int(total_eval):,}원`
