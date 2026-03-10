@@ -36,6 +36,7 @@ git pull
 ```
 
 
+**라즈베리파이 명령어들**
 ```bash
 ps -ef | grep python
 pkill -f @.py
