@@ -33,7 +33,7 @@ ts_callback = 0.5
 stop_loss = -2.0
 trend_exit_fee = -1.0
 vol_factor = 2.5
-fixed_buy_amount = 250000  # 종목당 25만 원
+fixed_buy_amount = 250000  # 종목당 25만 원 올라갈까?
 
 max_price_dict = {}
 
