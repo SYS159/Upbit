@@ -61,8 +61,8 @@ def get_rsi(ticker):
     _loss = down.abs().ewm(com=13, min_periods=14).mean()
     return 100 - (100 / (1 + (_gain / _loss)))
 
-print("🚀 TD_v5_3 실전 가동 시작 (로그 기록 기능 포함)")
-send_discord_msg("🤖 **TD_v5_3** 가동 시작\n- 종목당 25만 원\n- 로그 기록 활성화 (trade_log.csv)")
+print("🚀 TD_v5_4 실전 가동 시작 (로그 기록 기능 포함)")
+send_discord_msg("🤖 **TD_v5_4** 가동 시작\n- 종목당 25만 원\n- 로그 기록 활성화 (trade_log.csv)")
 
 while True:
     try:
