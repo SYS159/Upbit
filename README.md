@@ -34,3 +34,10 @@ git push
 ```bash
 git pull
 ```
+
+
+```bash
+ps -ef | grep python
+pkill -f @.py
+nohup python3 @.py > @.log 2>&1 &
+```
