@@ -24,7 +24,7 @@ nohup python3 -u M_v3_4.py > M_v3_4.log 2>&1 &
 
 ---
 
-## 📈 Trading Bot 버전 기록
+## 📈 Trading Code
 
 **TD_v5_1** 
 - BTC:1% / ETH:1.5% / 기타:2% RSI 코인별 설정
