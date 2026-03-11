@@ -122,7 +122,7 @@ while True:
                     if krw_balance > fixed_buy_amount:
                         upbit.buy_market_order(ticker, fixed_buy_amount)
                         reason = f"골든크로스(RSI < {config['rsi_max']})" if cond_gold else f"RSI({config['rsi_threshold']}) 낙주"
-                        send_discord_msg(f"🔺 **[{ticker}] 매수**\n사유: {reason}\n현재 RSI: {curr_rsi:.2f}")
+                        send_discord_msg(f"✅ **[{ticker}] 매수**\n사유: {reason}\n현재 RSI: {curr_rsi:.2f}")
 
             # --- [매도 로직] ---
             elif balance > 0:
@@ -136,12 +136,12 @@ while True:
 
                 is_sell, sell_reason = False, ""
                 if profit_rate >= ts_act and drop_from_max >= ts_callback:
-                    is_sell, sell_reason = True, f"TS 익절({ts_act}%)"
+                    is_sell, sell_reason = True, f"TS 익절({ts_act}% 🔺)"
                 elif profit_rate <= stop_loss:
-                    is_sell, sell_reason = True, "손절(-2%)"
+                    is_sell, sell_reason = True, "손절(-2% 🔻)"
                 elif ma3.iloc[-1] < ma10.iloc[-1] and profit_rate < ts_act:
                     if profit_rate < trend_exit_fee:
-                        is_sell, sell_reason = True, "추세 하락 탈출"
+                        is_sell, sell_reason = True, "추세 하락 탈출 🔻"
 
                 if is_sell:
                     # [로그 기록용 수익금 계산]
@@ -153,7 +153,7 @@ while True:
                     # 파일에 로그 저장
                     log_trade(ticker, profit_amount, profit_rate, sell_reason)
                     
-                    send_discord_msg(f"🔻 **[{ticker}] {sell_reason}**\n수익: `{int(profit_amount):+,}원` ({profit_rate:+.2f}%)")
+                    send_discord_msg(f" **[{ticker}] {sell_reason}**\n수익: `{int(profit_amount):+,}원` ({profit_rate:+.2f}%)")
                     if ticker in max_price_dict: del max_price_dict[ticker]
 
         time.sleep(10)
