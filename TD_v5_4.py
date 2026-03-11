@@ -33,7 +33,7 @@ ts_callback = 0.5
 stop_loss = -2.0
 trend_exit_fee = -1.0
 vol_factor = 2.5
-fixed_buy_amount = 250000  # 종목당 25만 원 올라갈까?
+fixed_buy_amount = 250000  # 종목당 25만 원
 
 max_price_dict = {}
 
@@ -65,31 +65,33 @@ def get_rsi(ticker):
 print("🚀 TD_v5_4 실전 가동 시작 (로그 기록 기능 포함)")
 send_discord_msg("🤖 **TD_v5_4** 가동 시작\n- 종목당 25만 원\n- 로그 기록 활성화 (trade_log.csv)")
 
-# 루프 시작 전 (맨 위)
-last_sent_time = ""
+# # 루프 시작 전 (맨 위)
+# last_sent_time = ""
 
 while True:
     try:
         now = datetime.now()
-        curr_min = now.minute
-        
-        # "15:00" 처럼 현재 시간과 분을 합친 문자열 생성
-        current_marker = f"{now.hour}:{now.minute}"
 
-        # 0분(정각) 또는 30분이고, 방금 보낸 시간(marker)과 다를 때만 실행
-        if curr_min in [0] and last_sent_time != current_marker:
-            try:
-                current_usdt_price = pyupbit.get_current_price("KRW-USDT")
-                if current_usdt_price is not None:
-                    msg = (f"💓 **TD_v5_4 생존 신고**\n"
-                           f"- 상태: **연결 정상**\n"
-                           f"- 현재 테더(USDT): `{current_usdt_price:,} 원` 💵")
-                    send_discord_msg(msg)
+        # 생존신고 확인용인데, 확인 잘되는거 같아서 껐음.
+        # curr_min = now.minute
+        
+        # # "15:00" 처럼 현재 시간과 분을 합친 문자열 생성
+        # current_marker = f"{now.hour}:{now.minute}"
+
+        # # 0분(정각) 또는 30분이고, 방금 보낸 시간(marker)과 다를 때만 실행
+        # if curr_min in [0] and last_sent_time != current_marker:
+        #     try:
+        #         current_usdt_price = pyupbit.get_current_price("KRW-USDT")
+        #         if current_usdt_price is not None:
+        #             msg = (f"💓 **TD_v5_4 생존 신고**\n"
+        #                    f"- 상태: **연결 정상**\n"
+        #                    f"- 현재 테더(USDT): `{current_usdt_price:,} 원` 💵")
+        #             send_discord_msg(msg)
                     
-                    # 성공 시 기록 업데이트 (예: last_sent_time = "15:00")
-                    last_sent_time = current_marker 
-            except Exception as conn_e:
-                print(f"보고 중 오류 발생: {conn_e}")
+        #             # 성공 시 기록 업데이트 (예: last_sent_time = "15:00")
+        #             last_sent_time = current_marker 
+        #     except Exception as conn_e:
+        #         print(f"보고 중 오류 발생: {conn_e}")
             
         for ticker in target_tickers:
             config = strategy_config[ticker]
@@ -120,7 +122,7 @@ while True:
                     if krw_balance > fixed_buy_amount:
                         upbit.buy_market_order(ticker, fixed_buy_amount)
                         reason = f"골든크로스(RSI < {config['rsi_max']})" if cond_gold else f"RSI({config['rsi_threshold']}) 낙주"
-                        send_discord_msg(f"✅ **[{ticker}] 매수**\n사유: {reason}\n현재 RSI: {curr_rsi:.2f}")
+                        send_discord_msg(f"🔺 **[{ticker}] 매수**\n사유: {reason}\n현재 RSI: {curr_rsi:.2f}")
 
             # --- [매도 로직] ---
             elif balance > 0:
@@ -151,7 +153,7 @@ while True:
                     # 파일에 로그 저장
                     log_trade(ticker, profit_amount, profit_rate, sell_reason)
                     
-                    send_discord_msg(f"✅ **[{ticker}] {sell_reason}**\n수익: `{int(profit_amount):+,}원` ({profit_rate:+.2f}%)")
+                    send_discord_msg(f"🔻 **[{ticker}] {sell_reason}**\n수익: `{int(profit_amount):+,}원` ({profit_rate:+.2f}%)")
                     if ticker in max_price_dict: del max_price_dict[ticker]
 
         time.sleep(10)
