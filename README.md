@@ -6,7 +6,7 @@
 
 **M_v3_3** - 시간 동기화, KRW 마켓에 없는건 자산검색할때 X 오류남이거때매
 
-**M_v3_4** - v3에서 코드 다듬기, 분석하는거 때문에 에러나는거 해결, 시간 오류 해결
+**M_v3_4** - v3에서 코드 다듬기, 분석하는거 때문에 에러나는거 해결, 시간 오류 해결, 매 시간마다 알림
 
 ---
 
@@ -43,6 +43,12 @@ git pull
 **라즈베리파이 명령어들**
 ```bash
 ps -ef | grep python
-pkill -f @.py
-nohup python3 @.py > @.log 2>&1 &
+
+pkill -f TD_v5_4.py
+nohup python3 -u TD_v5_4.py > TD_v5_4.log 2>&1 &
+
+pkill -f M_v3_4.py
+nohup python3 -u  M_v3_4.py > M_v3_4.log 2>&1 &
+
+-u가 있어야 로그 실시간으로 작성함.
 ```

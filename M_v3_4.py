@@ -174,7 +174,7 @@ while True:
             weekly_profit_rate = (weekly_diff / weekly_base_asset * 100) if weekly_base_asset > 0 else 0
 
             # 2. 정기 알림 (매시 정각 및 30분)
-            if now.minute in [0, 30] and current_hm != last_sent_hm:
+            if now.minute in [0] and current_hm != last_sent_hm:
                 status = f"📊 **[실시간 자산 리포트 - {current_hm}]**\n" \
                          f"{individual_details}\n" \
                          f"💰 **현재 총 자산**: `{int(total_eval):,}원` \n" \

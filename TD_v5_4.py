@@ -61,39 +61,34 @@ def get_rsi(ticker):
     _loss = down.abs().ewm(com=13, min_periods=14).mean()
     return 100 - (100 / (1 + (_gain / _loss)))
 
-# --- [변수 초기화: 이 부분이 추가되어야 합니다] ---
-last_sent_min = -1
 
 print("🚀 TD_v5_4 실전 가동 시작 (로그 기록 기능 포함)")
 send_discord_msg("🤖 **TD_v5_4** 가동 시작\n- 종목당 25만 원\n- 로그 기록 활성화 (trade_log.csv)")
 
+# 루프 시작 전 (맨 위)
+last_sent_time = ""
+
 while True:
     try:
-
         now = datetime.now()
         curr_min = now.minute
         
-        # --- [정각/30분 시스템 및 시장 가격 보고] ---
-        if curr_min in [0] and last_sent_min != curr_min:
+        # "15:00" 처럼 현재 시간과 분을 합친 문자열 생성
+        current_marker = f"{now.hour}:{now.minute}"
+
+        # 0분(정각) 또는 30분이고, 방금 보낸 시간(marker)과 다를 때만 실행
+        if curr_min in [0] and last_sent_time != current_marker:
             try:
-                # 업비트 서버에서 실시간 테더 가격 조회
                 current_usdt_price = pyupbit.get_current_price("KRW-USDT")
-                
                 if current_usdt_price is not None:
-                    # 테더 가격 조회가 성공했다는 것은 연결이 정상이라는 뜻입니다.
-                    msg = (
-                        f"💓 **TD_v5_4 생존 신고**\n"
-                        f"- 상태: **연결 정상**\n"
-                        f"- 현재 테더(USDT): `{current_usdt_price:,} 원` 💵"
-                    )
+                    msg = (f"💓 **TD_v5_4 생존 신고**\n"
+                           f"- 상태: **연결 정상**\n"
+                           f"- 현재 테더(USDT): `{current_usdt_price:,} 원` 💵")
                     send_discord_msg(msg)
-                else:
-                    # 가격을 가져오지 못했다면 연결 문제일 가능성이 있습니다.
-                    send_discord_msg("⚠️ **연결 경고**: 업비트 시세 정보를 가져올 수 없습니다.")
-                
-                last_sent_min = curr_min
+                    
+                    # 성공 시 기록 업데이트 (예: last_sent_time = "15:00")
+                    last_sent_time = current_marker 
             except Exception as conn_e:
-                # 에러 발생 시 출력
                 print(f"보고 중 오류 발생: {conn_e}")
             
         for ticker in target_tickers:
