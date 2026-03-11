@@ -1,7 +1,8 @@
 # Upbit Trading Bot
 
 ## 이대로 가져가고 실행 하세요 ##
-**git clone https://github.com/SYS159/Upbit.git**
+
+code git clone https://github.com/SYS159/Upbit.git
 
 ## 📌 Main Code
 
