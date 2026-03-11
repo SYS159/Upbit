@@ -2,7 +2,17 @@
 
 ## 이대로 가져가고 실행 하세요 ##
 
-code git clone https://github.com/SYS159/Upbit.git
+## ⚙️ 설치
+```bash
+git clone https://github.com/SYS159/Upbit.git
+cd Upbit
+```
+
+## 🚀 실행
+```bash
+nohup python3 -u TD_v5_4.py > TD_v5_4.log 2>&1 &
+nohup python3 -u M_v3_4.py > M_v3_4.log 2>&1 &
+```
 
 ## 📌 Main Code
 
