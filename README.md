@@ -8,7 +8,7 @@ cd Upbit
 
 ## 🚀 실행
 ```bash
-nohup python3 -u TD_v5_4.py > TD_v5_4.log 2>&1 &
+nohup python3 -u UTD_v5_5.py > UTD_v5_5.log 2>&1 &
 nohup python3 -u M_v3_4.py > M_v3_4.log 2>&1 &
 ```
 
@@ -43,6 +43,9 @@ nohup python3 -u M_v3_4.py > M_v3_4.log 2>&1 &
 - 매주 월요일 코인별 손/실 체크
 - 업비트 연결되어있는지 매 시간마다 테더 값 받아오기 구현했으나 주석처리
 
+**UTD_v5_5**
+- 트레일링스탑에서 판매로직에 문제가 있어 수정 1.2% -> 0.7% 면 판매되어야 하지만 판매되지 않았음
+
 ---
 
 ## 💻 자주 쓰는 명령어
@@ -63,8 +66,8 @@ git pull
 ```bash
 ps -ef | grep python
 
-pkill -f TD_v5_4.py
-nohup python3 -u TD_v5_4.py > TD_v5_4.log 2>&1 &
+pkill -f UTD_v5_5.py
+nohup python3 -u UTD_v5_5.py > UTD_v5_5.log 2>&1 &
 
 pkill -f M_v3_4.py
 nohup python3 -u  M_v3_4.py > M_v3_4.log 2>&1 &
