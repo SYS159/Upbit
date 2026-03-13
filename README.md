@@ -10,13 +10,13 @@ cd Upbit
 ```bash
 ps -ef | grep python
 nohup python3 -u M_v3_4.py > M_v3_4.log 2>&1 &
-nohup python3 -u UTD_v5_5.py > UTD_v5_5.log 2>&1 &
+nohup python3 -u UTD_v6_1.py > UTD_v6_1.log 2>&1 &
 ```
 
 ## 정지
 ```bash
 pkill -f M_v3_4.py
-pkill -f UTD_v5_5.py
+pkill -f UTD_v6_1.py
 ```
 
 ## 📌 Main Code
@@ -52,6 +52,16 @@ pkill -f UTD_v5_5.py
 
 **UTD_v5_5**
 - 트레일링스탑에서 판매로직에 문제가 있어 수정 1.2% -> 0.7% 면 판매되어야 하지만 판매되지 않았음
+
+**UTH_v6_1**
+- 매수로직 수정 골든크로스 완화
+- 낙주 있/없 코인별 수정
+
+## 📈 Back Testing Code
+
+**UBT_v6_1** 
+- RSI 낙주 있/없, 골든크로스 거래량 배율 수정 가능
+- 코인 추가
 
 ---
 
