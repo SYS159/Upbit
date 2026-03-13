@@ -8,8 +8,15 @@ cd Upbit
 
 ## 🚀 실행
 ```bash
-nohup python3 -u UTD_v5_5.py > UTD_v5_5.log 2>&1 &
+ps -ef | grep python
 nohup python3 -u M_v3_4.py > M_v3_4.log 2>&1 &
+nohup python3 -u UTD_v5_5.py > UTD_v5_5.log 2>&1 &
+```
+
+## 정지
+```bash
+pkill -f M_v3_4.py
+pkill -f UTD_v5_5.py
 ```
 
 ## 📌 Main Code
@@ -60,17 +67,4 @@ git push
 **파일 내리기 (pull)**
 ```bash
 git pull
-```
-
-**라즈베리파이 명령어들**
-```bash
-ps -ef | grep python
-
-pkill -f UTD_v5_5.py
-nohup python3 -u UTD_v5_5.py > UTD_v5_5.log 2>&1 &
-
-pkill -f M_v3_4.py
-nohup python3 -u  M_v3_4.py > M_v3_4.log 2>&1 &
-
--u가 있어야 로그 실시간으로 작성함.
 ```
