@@ -24,7 +24,7 @@ strategy_config = {
 "KRW-ADA": {"rsi_threshold": 25, "rsi_max": 40, "ts_activation": 1.0, "use_rsi_drop": False, "vol_factor": 2.0},
 "KRW-DOT": {"rsi_threshold": 25, "rsi_max": 40, "ts_activation": 1.0, "use_rsi_drop": False, "vol_factor": 1.0},
 "KRW-AVAX": {"rsi_threshold": 25, "rsi_max": 40, "ts_activation": 1.0, "use_rsi_drop": True, "vol_factor": 1.5},
-"KRW-DOGE": {"rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": False, "vol_factor": 2.0},
+# "KRW-DOGE": {"rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": False, "vol_factor": 2.0},
 "KRW-LINK": {"rsi_threshold": 25, "rsi_max": 40, "ts_activation": 1.0, "use_rsi_drop": False, "vol_factor": 2.0},
 "KRW-NEAR": {"rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": False, "vol_factor": 1.5}
 # "KRW-SHIB": {"rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": False, "vol_factor": 1.0}

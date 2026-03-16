@@ -137,8 +137,6 @@ def get_weekly_trade_summary():
             emoji = "✅" if amount >= 0 else "❌"
             report += f"{emoji} **{ticker}**: `{amount:+,}원` 확정\n"
             
-        report += f"\n💰 **주간 매도 수익 합계**: `{total_realized:+,}원`"
-        
         # 월요일 결산 보고 후에는 파일을 비워 다음 주를 준비합니다.
         with open(TRADE_LOG_FILE, "w", encoding="utf-8") as f:
             pass
@@ -195,7 +193,6 @@ while True:
                     
                     final_msg = f"📅 **[지난주 투자 성적 최종 결산]**\n\n" \
                                 f"{trade_summary}\n\n" \
-                                f"📝 **일별 자산 흐름:**\n```csv\n{daily_log if daily_log else '데이터 없음'}```\n" \
                                 f"📈 **전체 자산 변동**: `{int(weekly_diff):+,}원` ({weekly_profit_rate:+.2f}%)\n" \
                                 f"💰 **최종 총 자산**: `{int(total_eval):,}원`"
                     send_discord_msg(final_msg)
