@@ -91,11 +91,12 @@ while True:
             
             # --- [매수 로직] ---
             if balance == 0:
-                # 1. 5선/20선 골든크로스 조건 
+                # 1. 5선/20선 골든크로스 조건 (양봉 필터 추가)
                 cond_gold = (ma5.iloc[-2] < ma20.iloc[-2] and 
                              ma5.iloc[-1] > ma20.iloc[-1] and 
                              df['volume'].iloc[-1] > vol_avg.iloc[-1] * config['vol_factor'] and
-                             curr_rsi < config['rsi_max'])
+                             curr_rsi < config['rsi_max'] and
+                             df['close'].iloc[-1] > df['open'].iloc[-1]) # 💡 핵심: 현재 캔들이 빨간색 양봉(종가 > 시가)일 때만 매수 허락!
                 
                 # 2. 백테스트 결과가 좋았던 '단순 낙주' 로직 복구
                 cond_rsi = (curr_rsi < config['rsi_threshold']) if config['use_rsi_drop'] else False

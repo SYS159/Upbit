@@ -60,6 +60,7 @@ pkill -f UTD_v6_2.py
 
 **UTD_v6_2**
 - 파라미터 수정
+- 음봉에는 골든크로스라도 매수 X
 
 ## 📈 Back Testing Code
 
