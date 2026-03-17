@@ -96,9 +96,12 @@ while True:
                              df['volume'].iloc[-1] > vol_avg.iloc[-1] * config['vol_factor'] and
                              curr_rsi < config['rsi_max'])
                 
-                # 2. RSI 낙주 조건 (코인별 use_rsi_drop 적용)
-                cond_rsi = (curr_rsi < config['rsi_threshold']) if config['use_rsi_drop'] else False
-
+                # 직전 캔들의 RSI와 현재 캔들의 RSI를 둘 다 가져옵니다.
+                prev_rsi = rsi_series.iloc[-2]
+                
+                # 직전에는 기준치 밑이었는데, 현재 기준치를 돌파(반등)했을 때만 True!
+                cond_rsi = (prev_rsi < config['rsi_threshold'] and curr_rsi >= config['rsi_threshold']) if config['use_rsi_drop'] else False
+                
                 if cond_gold or cond_rsi:
                     krw_balance = upbit.get_balance("KRW")
                     if krw_balance > fixed_buy_amount:

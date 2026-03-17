@@ -56,6 +56,7 @@ pkill -f UTD_v6_1.py
 **UTH_v6_1**
 - 매수로직 수정 골든크로스 완화
 - 낙주 있/없 코인별 수정
+- RSI가 반등할때 구매
 
 ## 📈 Back Testing Code
 
