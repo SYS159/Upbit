@@ -70,6 +70,7 @@ pkill -f UTD_v6_3.py
 - KRW-LINK	3 / 15선 / 5봉  / X  / 끄기	   - 50	 / 1.00%
 - KRW-SOL	3 / 15선 / 20봉 / O  / 사용	25 - 50	 / 1.50%
 - KRW-XRP	3 / 15선 / 10봉 / O  / 사용	25 - 50	 / 1.50%
+- KRW-TAO   3 / 15선 / 10봉 / O  / 사용 30 - 50  / 1.50%
 
 ## 📈 Back Testing Code
 
