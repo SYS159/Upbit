@@ -80,18 +80,5 @@ pkill -f UTD_v6_3.py
 **UBT_v6_2** 
 - MA5, MA20으로 수정 테스트
 
----
-
-## 💻 자주 쓰는 명령어
-
-**파일 올리기 (push)**
-```bash
-git add 파일명.py
-git commit -m "메시지"
-git push
-```
-
-**파일 내리기 (pull)**
-```bash
-git pull
-```
+**UBT_v6_3**
+- 각종 파라미터 다 수정가능하게 만듬

@@ -24,7 +24,10 @@ strategy_config = {
     "KRW-ETH":  {"ma_short": 3, "ma_long": 15, "vol_window": 5,  "rsi_threshold": 25, "rsi_max": 60, "ts_activation": 1.5, "use_rsi_drop": False, "vol_factor": 1.0},
     "KRW-LINK": {"ma_short": 3, "ma_long": 15, "vol_window": 5,  "rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.0, "use_rsi_drop": False, "vol_factor": 1.0},
     "KRW-SOL":  {"ma_short": 3, "ma_long": 15, "vol_window": 20, "rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True,  "vol_factor": 1.0},
-    "KRW-XRP":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True,  "vol_factor": 1.0}
+    "KRW-XRP":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True,  "vol_factor": 1.0},
+
+    # 20260317 벡테스팅 해보고 추가
+    "KRW-TAO":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True,  "vol_factor": 1.0},
 }
 
 target_tickers = list(strategy_config.keys())

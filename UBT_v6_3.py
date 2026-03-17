@@ -131,7 +131,9 @@ if __name__ == "__main__":
     pd.set_option('display.width', 1000) 
     
     target_tickers = [
-        "KRW-BTC", "KRW-ETH", "KRW-SOL", "KRW-XRP", "KRW-NEAR", "KRW-LINK"
+        # "KRW-BTC", "KRW-ETH", "KRW-SOL", "KRW-XRP", "KRW-NEAR", "KRW-LINK", 
+        # "KRW-TRX", "KRW-TAO", "KRW-BCH", "KRW-AAVE"
+        "KRW-DOGE", "KRW-SUI", "KRW-SHIB"
     ]
     
     rsi_drop_options = [True, False]
