@@ -30,8 +30,9 @@ def get_safe_ohlcv(ticker, days=7):
     final_df = final_df[~final_df.index.duplicated(keep='last')] # 중복 제거
     return final_df.tail(count) # 딱 원하는 갯수만 잘라서 반환
 
-# --- [시뮬레이션 로직 (이전과 동일)] ---
-def run_simulation(ticker, df, use_rsi_drop, vol_factor, rsi_threshold=30, rsi_max=50, ts_act=1.0, ts_callback=0.5, stop_loss=-2.0, trend_exit_fee=-1.0):
+# --- [시뮬레이션 로직] ---
+# 💡 vol_window 파라미터 추가
+def run_simulation(ticker, df, use_rsi_drop, vol_factor, vol_window, rsi_threshold=30, rsi_max=50, ts_act=1.0, ts_callback=0.5, stop_loss=-2.0, trend_exit_fee=-1.0):
     balance = 0
     avg_buy_price = 0
     max_price = 0
@@ -43,29 +44,27 @@ def run_simulation(ticker, df, use_rsi_drop, vol_factor, rsi_threshold=30, rsi_m
     rsi_count = 0
     current_buy_reason = ""
 
-    for i in range(25, len(df)): # MA20 계산을 위해 시작 인덱스를 조금 넉넉하게 변경
+    for i in range(25, len(df)): # 넉넉하게 25부터 시작
         curr_close = df['close'].iloc[i]
         curr_rsi = df['rsi'].iloc[i]
         
-        # 💡 [핵심 수정] 3, 10 -> 5, 20으로 변수명 및 데이터 변경
-        ma5_prev = df['ma5'].iloc[i-1]
-        ma20_prev = df['ma20'].iloc[i-1]
-        ma5_curr = df['ma5'].iloc[i]
-        ma20_curr = df['ma20'].iloc[i]
+        # 💡 변수명을 직관적으로 변경 (ma_short, ma_long)
+        ma_short_prev = df['ma_short'].iloc[i-1]
+        ma_long_prev = df['ma_long'].iloc[i-1]
+        ma_short_curr = df['ma_short'].iloc[i]
+        ma_long_curr = df['ma_long'].iloc[i]
         
         vol_curr = df['volume'].iloc[i]
         vol_avg_curr = df['vol_avg'].iloc[i]
 
         if balance == 0:
-            # 💡 [핵심 수정] 골든크로스 로직 5선, 20선 교차 확인
-            cond_gold = (ma5_prev < ma20_prev and 
-                         ma5_curr > ma20_curr and 
+            # 💡 골든크로스 로직 확인
+            cond_gold = (ma_short_prev < ma_long_prev and 
+                         ma_short_curr > ma_long_curr and 
                          vol_curr > vol_avg_curr * vol_factor and 
                          curr_rsi < rsi_max)
-            # 👇 수정된 부분: "이전 캔들에서는 RSI가 바닥이었고, 이번 캔들에서 위로 뚫고 올라왔는가?"
-            # prev_rsi = df['rsi'].iloc[i-1]
-            # cond_rsi = (prev_rsi < rsi_threshold and curr_rsi >= rsi_threshold) if use_rsi_drop else False
-            # 결과가 예전께 더 좋아서 현재는 예전꺼 그대로 반영.
+            
+            # 단순 낙주 조건 (결과가 좋아서 유지)
             cond_rsi = (curr_rsi < rsi_threshold) if use_rsi_drop else False
 
             if cond_gold or cond_rsi:
@@ -90,8 +89,8 @@ def run_simulation(ticker, df, use_rsi_drop, vol_factor, rsi_threshold=30, rsi_m
                 is_sell = True
             elif profit_rate <= stop_loss:
                 is_sell = True
-            # 💡 [핵심 수정] 추세 하락 탈출도 5선, 20선 데드크로스 확인
-            elif ma5_curr < ma20_curr and profit_rate < ts_act:
+            # 💡 추세 하락 탈출 (데드크로스)
+            elif ma_short_curr < ma_long_curr and profit_rate < ts_act:
                 if profit_rate < trend_exit_fee:
                     is_sell = True
 
@@ -113,10 +112,12 @@ def run_simulation(ticker, df, use_rsi_drop, vol_factor, rsi_threshold=30, rsi_m
     win_rate = (win_count / trade_count * 100) if trade_count > 0 else 0
     final_profit = (total_profit_rate - 1) * 100
 
+    # 💡 들여쓰기 완벽 수정 및 컬럼 추가
     return {
         '종목': ticker,
         'RSI낙주': 'O' if use_rsi_drop else 'X',
-        '거래량': vol_factor,
+        '기준봉수': vol_window,  # 추가됨
+        '거래량배수': vol_factor,
         '총매수': trade_count,
         '골든': gold_count,
         'RSI': rsi_count,
@@ -130,20 +131,19 @@ if __name__ == "__main__":
     pd.set_option('display.width', 1000) 
     
     target_tickers = [
-        "KRW-BTC", "KRW-ETH", "KRW-SOL", "KRW-XRP",
-        "KRW-NEAR","KRW-LINK"
+        "KRW-BTC", "KRW-ETH", "KRW-SOL", "KRW-XRP", "KRW-NEAR", "KRW-LINK"
     ]
     
     rsi_drop_options = [True, False]
     vol_factor_options = [1.0, 1.5, 2.0, 2.5]
+    vol_window_options = [5, 10, 20] # 💡 5개, 10개, 20개 캔들 평균 테스트
     
     ts_act_dict = {
         "KRW-BTC": 1.0, "KRW-ETH": 1.5, "KRW-SOL": 1.5, "KRW-XRP": 1.5,
-        "KRW-NEAR":1.5,"KRW-LINK":1.0
-        # 아무것도 적지않으면 자동으로 1%로 테스트
+        "KRW-NEAR": 1.5, "KRW-LINK": 1.0
     }
     
-    print("🚀 [세부 분석 버전] 7일치 차트 다운로드 시작 (시간이 조금 걸립니다)...\n")
+    print("🚀 [UBT_v6_3 거래량 정밀 분석] 7일치 차트 다운로드 시작...\n")
     
     all_results = []
     
@@ -157,13 +157,11 @@ if __name__ == "__main__":
             continue
         print("✅ 완료")
             
-        # 💡 [핵심 수정] MA5, MA20 계산으로 변경
-        # 테스트한다고 window = 숫자 수정
-        df['ma5'] = df['close'].rolling(window=5).mean()
-        df['ma20'] = df['close'].rolling(window=20).mean()
-        # 몇개봉의 거래량을 기준으로 할것인가
-        df['vol_avg'] = df['volume'].rolling(window=10).mean()
+        # 💡 이평선 세팅 (현재 3선 / 15선으로 설정)
+        df['ma_short'] = df['close'].rolling(window=3).mean()
+        df['ma_long'] = df['close'].rolling(window=15).mean()
         
+        # RSI 계산
         delta = df['close'].diff()
         up, down = delta.copy(), delta.copy()
         up[up < 0], down[down > 0] = 0, 0
@@ -171,28 +169,32 @@ if __name__ == "__main__":
         _loss = down.abs().ewm(com=13, min_periods=14).mean()
         df['rsi'] = 100 - (100 / (1 + (_gain / _loss)))
 
-        for use_rsi in rsi_drop_options:
-            for v_factor in vol_factor_options:
-                result = run_simulation(
-                    ticker=ticker, 
-                    df=df, 
-                    use_rsi_drop=use_rsi,
-                    vol_factor=v_factor,
-                    ts_act=ts_act_dict.get(ticker, 1.0)
-                )
-                
-                if result:
-                    all_results.append(result)
+        # 💡 [핵심 수정] 기준봉수를 바꿔가며 평균 거래량을 계속 새로 계산
+        for vol_win in vol_window_options:
+            df['vol_avg'] = df['volume'].rolling(window=vol_win).mean()
+            
+            for use_rsi in rsi_drop_options:
+                for v_factor in vol_factor_options:
+                    result = run_simulation(
+                        ticker=ticker, 
+                        df=df, 
+                        use_rsi_drop=use_rsi,
+                        vol_factor=v_factor,
+                        vol_window=vol_win, # 함수에 전달
+                        ts_act=ts_act_dict.get(ticker, 1.0)
+                    )
+                    
+                    if result:
+                        all_results.append(result)
 
     if all_results:
         df_summary = pd.DataFrame(all_results)
         
-        # 💡 [에러 수정] '총수익률(%)' -> '총수익(%)' 으로 변경 완료
         df_sorted = df_summary.sort_values(by=['종목', '총수익(%)'], ascending=[True, False])
         
-        # 보기 편하게 컬럼 순서 재배치 (선택 사항)
-        columns_order = ['종목', 'RSI낙주', '거래량', '총매수', '골든', 'RSI', '승률(%)', '총수익(%)']
+        # 💡 보기 편하게 컬럼 순서 재배치
+        columns_order = ['종목', 'RSI낙주', '기준봉수', '거래량배수', '총매수', '골든', 'RSI', '승률(%)', '총수익(%)']
         df_sorted = df_sorted[columns_order]
         
-        print("\n--- 📊 전략 조합별 상세 백테스트 결과 (MA5/MA20 적용, 최근 7일) ---")
+        print("\n--- 📊 전략 조합별 상세 백테스트 결과 (MA3/MA15 적용, 최근 7일) ---")
         print(df_sorted.to_string(index=False))
