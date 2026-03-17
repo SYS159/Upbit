@@ -43,27 +43,30 @@ def run_simulation(ticker, df, use_rsi_drop, vol_factor, rsi_threshold=30, rsi_m
     rsi_count = 0
     current_buy_reason = ""
 
-    for i in range(15, len(df)):
+    for i in range(25, len(df)): # MA20 계산을 위해 시작 인덱스를 조금 넉넉하게 변경
         curr_close = df['close'].iloc[i]
         curr_rsi = df['rsi'].iloc[i]
         
-        ma3_prev = df['ma3'].iloc[i-1]
-        ma10_prev = df['ma10'].iloc[i-1]
-        ma3_curr = df['ma3'].iloc[i]
-        ma10_curr = df['ma10'].iloc[i]
+        # 💡 [핵심 수정] 3, 10 -> 5, 20으로 변수명 및 데이터 변경
+        ma5_prev = df['ma5'].iloc[i-1]
+        ma20_prev = df['ma20'].iloc[i-1]
+        ma5_curr = df['ma5'].iloc[i]
+        ma20_curr = df['ma20'].iloc[i]
         
         vol_curr = df['volume'].iloc[i]
         vol_avg_curr = df['vol_avg'].iloc[i]
 
         if balance == 0:
-            cond_gold = (ma3_prev < ma10_prev and 
-                         ma3_curr > ma10_curr and 
+            # 💡 [핵심 수정] 골든크로스 로직 5선, 20선 교차 확인
+            cond_gold = (ma5_prev < ma20_prev and 
+                         ma5_curr > ma20_curr and 
                          vol_curr > vol_avg_curr * vol_factor and 
                          curr_rsi < rsi_max)
             # 👇 수정된 부분: "이전 캔들에서는 RSI가 바닥이었고, 이번 캔들에서 위로 뚫고 올라왔는가?"
-            prev_rsi = df['rsi'].iloc[i-1]
-            cond_rsi = (prev_rsi < rsi_threshold and curr_rsi >= rsi_threshold) if use_rsi_drop else False
-            # cond_rsi = (curr_rsi < rsi_threshold) if use_rsi_drop else False
+            # prev_rsi = df['rsi'].iloc[i-1]
+            # cond_rsi = (prev_rsi < rsi_threshold and curr_rsi >= rsi_threshold) if use_rsi_drop else False
+            # 결과가 예전께 더 좋아서 현재는 예전꺼 그대로 반영.
+            cond_rsi = (curr_rsi < rsi_threshold) if use_rsi_drop else False
 
             if cond_gold or cond_rsi:
                 balance = 1
@@ -87,7 +90,8 @@ def run_simulation(ticker, df, use_rsi_drop, vol_factor, rsi_threshold=30, rsi_m
                 is_sell = True
             elif profit_rate <= stop_loss:
                 is_sell = True
-            elif ma3_curr < ma10_curr and profit_rate < ts_act:
+            # 💡 [핵심 수정] 추세 하락 탈출도 5선, 20선 데드크로스 확인
+            elif ma5_curr < ma20_curr and profit_rate < ts_act:
                 if profit_rate < trend_exit_fee:
                     is_sell = True
 
@@ -127,7 +131,7 @@ if __name__ == "__main__":
     
     target_tickers = [
         "KRW-BTC", "KRW-ETH", "KRW-SOL", "KRW-XRP", 
-        "KRW-ADA", "KRW-DOT", "KRW-AVAX",
+        "KRW-AVAX",
         "KRW-NEAR","KRW-LINK"
     ]
     
@@ -135,9 +139,8 @@ if __name__ == "__main__":
     vol_factor_options = [1.0, 1.5, 2.0, 2.5]
     
     ts_act_dict = {
-        # "KRW-BTC": 1.0, "KRW-ETH": 1.5, "KRW-SOL": 1.5, "KRW-XRP": 1.5,
-        # "KRW-TRX": 1.0, "KRW-ADA": 1.0, "KRW-DOT": 1.0, "KRW-AVAX": 1.0
-        # "KRW-DOGE": 1.0, "KRW-SUI":1.0,"KRW-NEAR":1.0,"KRW-LINK":1.0,"KRW-SHIB":1.0
+        "KRW-BTC": 1.0, "KRW-ETH": 1.5, "KRW-SOL": 1.5, "KRW-XRP": 1.5, "KRW-AVAX": 1.0,
+        "KRW-NEAR":1.5,"KRW-LINK":1.0
         # 아무것도 적지않으면 자동으로 1%로 테스트
     }
     
@@ -155,8 +158,10 @@ if __name__ == "__main__":
             continue
         print("✅ 완료")
             
-        df['ma3'] = df['close'].rolling(window=3).mean()
-        df['ma10'] = df['close'].rolling(window=10).mean()
+        # 💡 [핵심 수정] MA5, MA20 계산으로 변경
+        df['ma5'] = df['close'].rolling(window=5).mean()
+        df['ma20'] = df['close'].rolling(window=20).mean()
+        # 몇개봉의 거래량을 기준으로 할것인가
         df['vol_avg'] = df['volume'].rolling(window=10).mean()
         
         delta = df['close'].diff()
@@ -189,5 +194,5 @@ if __name__ == "__main__":
         columns_order = ['종목', 'RSI낙주', '거래량', '총매수', '골든', 'RSI', '승률(%)', '총수익(%)']
         df_sorted = df_sorted[columns_order]
         
-        print("\n--- 📊 전략 조합별 상세 백테스트 결과 (최근 7일) ---")
+        print("\n--- 📊 전략 조합별 상세 백테스트 결과 (MA5/MA20 적용, 최근 7일) ---")
         print(df_sorted.to_string(index=False))
