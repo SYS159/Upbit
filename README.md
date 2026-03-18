@@ -9,13 +9,13 @@ cd Upbit
 ## 🚀 실행
 ```bash
 ps -ef | grep python
-nohup python3 -u M_v3_4.py > M_v3_4.log 2>&1 &
+nohup python3 -u UM_v4_1.py > UM_v4_1.log 2>&1 &
 nohup python3 -u UTD_v6_4.py > UTD_v6_4.log 2>&1 &
 ```
 
 ## 정지
 ```bash
-pkill -f M_v3_4.py
+pkill -f UM_v4_1.py
 pkill -f UTD_v6_4.py
 ```
 
@@ -28,6 +28,9 @@ pkill -f UTD_v6_4.py
 **M_v3_4** 
 - v3에서 코드 다듬기
 - 주간수익률 분석
+
+**UM_v4_1**
+- 일일 수익률 분석
 
 ---
 
