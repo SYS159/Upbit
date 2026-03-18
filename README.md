@@ -10,13 +10,13 @@ cd Upbit
 ```bash
 ps -ef | grep python
 nohup python3 -u M_v3_4.py > M_v3_4.log 2>&1 &
-nohup python3 -u UTD_v6_3.py > UTD_v6_3.log 2>&1 &
+nohup python3 -u UTD_v6_4.py > UTD_v6_4.log 2>&1 &
 ```
 
 ## 정지
 ```bash
 pkill -f M_v3_4.py
-pkill -f UTD_v6_3.py
+pkill -f UTD_v6_4.py
 ```
 
 ## 📌 Main Code
@@ -62,7 +62,7 @@ pkill -f UTD_v6_3.py
 - 파라미터 수정
 - 음봉에는 골든크로스라도 매수 X
 
-**UTH_v6_3**
+**UTD_v6_3**
 - 코인 / 이평선(MA) / 거래량 / 기준봉 / 낙주 줍기 / RSI 컷 / TS 발동
 - KRW-NEAR	5 / 20선 / 10봉 / O  / 사용	30 - 50	 / 1.50%
 - KRW-BTC	3 / 15선 / 5봉  / O  / 사용	30 - 50	 / 1.00%
@@ -71,6 +71,9 @@ pkill -f UTD_v6_3.py
 - KRW-SOL	3 / 15선 / 20봉 / O  / 사용	25 - 50	 / 1.50%
 - KRW-XRP	3 / 15선 / 10봉 / O  / 사용	25 - 50	 / 1.50%
 - KRW-TAO   3 / 15선 / 10봉 / O  / 사용 30 - 50  / 1.50%
+
+**UTD_v6_4**
+- RSI낙주 구매할때 유턴전략 사용
 
 ## 📈 Back Testing Code
 
