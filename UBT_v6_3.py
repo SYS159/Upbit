@@ -32,7 +32,7 @@ def get_safe_ohlcv(ticker, days=7):
 
 # --- [시뮬레이션 로직] ---
 # 💡 vol_window 파라미터 추가
-def run_simulation(ticker, df, use_rsi_drop, vol_factor, vol_window, rsi_threshold=30, rsi_max=50, ts_act=1.0, ts_callback=0.5, stop_loss=-2.0, trend_exit_fee=-1.0):
+def run_simulation(ticker, df, use_rsi_drop, vol_factor, vol_window, rsi_threshold=30, rsi_max=50, ts_act=1.0, ts_callback=0.75, stop_loss=-2.0, trend_exit_fee=-1.0):
     balance = 0
     avg_buy_price = 0
     max_price = 0
@@ -90,9 +90,9 @@ def run_simulation(ticker, df, use_rsi_drop, vol_factor, vol_window, rsi_thresho
             elif profit_rate <= stop_loss:
                 is_sell = True
             # 💡 추세 하락 탈출 (데드크로스)
-            elif ma_short_curr < ma_long_curr and profit_rate < ts_act:
-                if profit_rate < trend_exit_fee:
-                    is_sell = True
+            # elif ma_short_curr < ma_long_curr and profit_rate < ts_act:
+            #     if profit_rate < trend_exit_fee:
+            #         is_sell = True
 
             if is_sell:
                 net_profit = profit_rate - 0.1 
@@ -131,9 +131,9 @@ if __name__ == "__main__":
     pd.set_option('display.width', 1000) 
     
     target_tickers = [
-        # "KRW-BTC", "KRW-ETH", "KRW-SOL", "KRW-XRP", "KRW-NEAR", "KRW-LINK", 
-        # "KRW-TRX", "KRW-TAO", "KRW-BCH", "KRW-AAVE"
-        "KRW-DOGE", "KRW-SUI", "KRW-SHIB"
+        "KRW-BTC", "KRW-ETH", "KRW-SOL", "KRW-XRP", "KRW-NEAR", "KRW-LINK", 
+        "KRW-XRP", "KRW-TAO"
+        # "KRW-DOGE", "KRW-SUI", "KRW-SHIB"
     ]
     
     rsi_drop_options = [True, False]

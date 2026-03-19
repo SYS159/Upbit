@@ -14,18 +14,20 @@ webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
 
 upbit = pyupbit.Upbit(access, secret)
 
-# --- [V6.4 정밀 백테스트 기반 최적화 설정] ---
+# =====================================================================
+# 🛡️ [V7.1 절대 방어 파라미터 세팅] - 백테스트 1위 데이터 100% 반영
+# =====================================================================
 strategy_config = {
-    # 🏃‍♂️ [추세 탈출 ON 그룹] - 꺾이면 도망친다
-    "KRW-NEAR": {"ma_short": 5, "ma_long": 20, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True,  "vol_factor": 1.0, "use_trend_exit": True},
-    "KRW-SOL":  {"ma_short": 3, "ma_long": 15, "vol_window": 20, "rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True,  "vol_factor": 1.0, "use_trend_exit": True},
-    "KRW-LINK": {"ma_short": 3, "ma_long": 15, "vol_window": 5,  "rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.0, "use_rsi_drop": False, "vol_factor": 1.0, "use_trend_exit": True},
-    "KRW-TAO":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.0, "use_rsi_drop": True,  "vol_factor": 1.0, "use_trend_exit": True},
+    # 📉 [눌림목 매수 그룹] - 돌파할 때 쫓아가지 않고, 지지선에서 안전하게 줍는다.
+    "KRW-BTC":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.0, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": False, "use_pullback": True},
+    "KRW-LINK": {"ma_short": 5, "ma_long": 20, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.0, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": True,  "use_pullback": True},
+    "KRW-XRP":  {"ma_short": 5, "ma_long": 20, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": False, "use_pullback": True},
 
-    # 🛡️ [추세 탈출 OFF 그룹] - 묵직하게 버틴다
-    "KRW-BTC":  {"ma_short": 3, "ma_long": 15, "vol_window": 5,  "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.0, "use_rsi_drop": True,  "vol_factor": 1.0, "use_trend_exit": False},
-    "KRW-ETH":  {"ma_short": 3, "ma_long": 15, "vol_window": 5,  "rsi_threshold": 25, "rsi_max": 60, "ts_activation": 1.5, "use_rsi_drop": False, "vol_factor": 1.0, "use_trend_exit": False},
-    "KRW-XRP":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 25, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True,  "vol_factor": 1.0, "use_trend_exit": False}
+    # 🚀 [돌파 매수 그룹] - 힘이 붙을 때 시원하게 올라탄다 (눌림목 기다리면 기회 놓침)
+    "KRW-TAO":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.0, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": True,  "use_pullback": False},
+    "KRW-SOL":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": True,  "use_pullback": False},
+    "KRW-NEAR": {"ma_short": 5, "ma_long": 20, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": False, "use_pullback": False},
+    "KRW-ETH":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 60, "ts_activation": 1.5, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": False, "use_pullback": False}
 }
 
 target_tickers = list(strategy_config.keys())
@@ -40,15 +42,13 @@ max_price_dict = {}
 
 # --- [로그 및 알림 함수] ---
 def log_trade(ticker, profit_amount, profit_rate, reason):
-    """매도 시 수익 현황을 파일에 기록"""
     now = datetime.now().strftime('%Y-%m-%d %H:%M:%S')
     log_line = f"{now},{ticker},{int(profit_amount)},{profit_rate:.2f}%,{reason}\n"
     with open("trade_log.csv", "a", encoding="utf-8") as f:
         f.write(log_line)
 
 def send_discord_msg(message):
-    try:
-        requests.post(webhook_url, json={"content": message})
+    try: requests.post(webhook_url, json={"content": message})
     except: pass
 
 def get_rsi(ticker):
@@ -61,8 +61,8 @@ def get_rsi(ticker):
     _loss = down.abs().ewm(com=13, min_periods=14).mean()
     return 100 - (100 / (1 + (_gain / _loss)))
 
-print("🚀 UTH_v6_4 실전 가동 시작 (RSI 유턴 돌파 & TAO 추가)")
-send_discord_msg("🤖 **UTH_v6_4** 가동 시작\n- 폭락장 방어: RSI 유턴(Cross-up) 로직 적용\n- 신규 코인 TAO 추가 완료\n- 종목당 25만 원")
+print("🚀 UTH_v7_1 실전 가동 시작 (하이브리드 절대 방어 시스템)")
+send_discord_msg("🤖 **UTH_v7_1** 가동 시작\n- 방어막 전개 완료: 코인별 눌림목/돌파 하이브리드 매수\n- 무거운 이평선 방어 및 추세탈출 최적화 완료")
 
 while True:
     try:
@@ -76,7 +76,6 @@ while True:
             
             curr_price = pyupbit.get_current_price(ticker)
             
-            # 동적 이평선 및 거래량 계산
             ma_short = df['close'].rolling(window=config['ma_short']).mean()
             ma_long = df['close'].rolling(window=config['ma_long']).mean()
             vol_avg = df['volume'].rolling(window=config['vol_window']).mean()
@@ -84,23 +83,32 @@ while True:
             rsi_series = get_rsi(ticker)
             if rsi_series is None or len(rsi_series) < 2: continue
             
-            # 💡 [핵심] 직전 캔들과 현재 캔들의 RSI를 비교하기 위해 두 개를 가져옵니다.
             prev_rsi = rsi_series.iloc[-2]
             curr_rsi = rsi_series.iloc[-1]
             
             balance = upbit.get_balance(ticker)
             
-            # --- [매수 로직] ---
+            # --- [매수 로직: 하이브리드 타점 적용] ---
             if balance == 0:
-                # 1. 맞춤형 골든크로스 + 거래량 + RSI 제한 + [양봉 필터]
-                cond_gold = (ma_short.iloc[-2] < ma_long.iloc[-2] and 
-                             ma_short.iloc[-1] > ma_long.iloc[-1] and 
-                             df['volume'].iloc[-1] > vol_avg.iloc[-1] * config['vol_factor'] and
-                             curr_rsi < config['rsi_max'] and
-                             df['close'].iloc[-1] > df['open'].iloc[-1])
-                
-                # 2. 💡 [핵심 업데이트] RSI 유턴(Cross-up) 돌파 로직
-                # 직전 5분에는 기준선 아래 지하실에 있었으나, 현재 5분에는 기준선을 뚫고 올라왔을 때(찐반등) 매수
+                curr_low = df['low'].iloc[-1]
+                curr_open = df['open'].iloc[-1]
+                curr_close = df['close'].iloc[-1]
+
+                if config['use_pullback']:
+                    # 📉 [눌림목 매수] 정배열 상승 중, 가격이 단기선 근처로 눌렸다가 양봉 지지 확인 시
+                    cond_gold = (ma_short.iloc[-1] > ma_long.iloc[-1] and 
+                                 curr_low <= ma_short.iloc[-1] * 1.002 and  
+                                 curr_close > curr_open and             
+                                 curr_rsi < config['rsi_max'])
+                else:
+                    # 🚀 [돌파 매수] 거래량이 터지며 골든크로스가 일어나는 순간
+                    cond_gold = (ma_short.iloc[-2] < ma_long.iloc[-2] and 
+                                 ma_short.iloc[-1] > ma_long.iloc[-1] and 
+                                 df['volume'].iloc[-1] > vol_avg.iloc[-1] * config['vol_factor'] and
+                                 curr_rsi < config['rsi_max'] and
+                                 curr_close > curr_open)
+
+                # RSI 유턴 돌파 로직
                 cond_rsi = (prev_rsi < config['rsi_threshold'] and curr_rsi >= config['rsi_threshold']) if config['use_rsi_drop'] else False
 
                 if cond_gold or cond_rsi:
@@ -109,19 +117,18 @@ while True:
                         upbit.buy_market_order(ticker, fixed_buy_amount)
                         
                         if cond_gold:
-                            reason = f"골든크로스({config['ma_short']}/{config['ma_long']}선, Vol x{config['vol_factor']})"
+                            trade_type = "눌림목" if config['use_pullback'] else f"돌파(Vol x{config['vol_factor']})"
+                            reason = f"{trade_type} 진입({config['ma_short']}/{config['ma_long']}선)"
                         else:
                             reason = f"RSI 유턴 돌파(현재 {curr_rsi:.1f}▲)"
                             
                         send_discord_msg(f"✅ **[{ticker}] 매수**\n사유: {reason}")
 
-            # --- [매도 로직] ---
+            # --- [매도 로직: 추세 탈출(ON/OFF) 최적화] ---
             elif balance > 0:
                 avg_buy_price = upbit.get_avg_buy_price(ticker)
                 
-                # 💡 [안전 장치] 에어드랍이나 직접 입금 등으로 평단가가 0원인 코인은 계산식 오류(ZeroDivision) 방지를 위해 건너뜁니다.
-                if avg_buy_price == 0:
-                    continue
+                if avg_buy_price == 0: continue
                     
                 curr_price = pyupbit.get_current_price(ticker)
                 

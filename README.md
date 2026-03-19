@@ -10,13 +10,13 @@ cd Upbit
 ```bash
 ps -ef | grep python
 nohup python3 -u UM_v4_1.py > UM_v4_1.log 2>&1 &
-nohup python3 -u UTD_v6_4.py > UTD_v6_4.log 2>&1 &
+nohup python3 -u UTD_v7_1.py > UTD_v7_1.log 2>&1 &
 ```
 
 ## 정지
 ```bash
 pkill -f UM_v4_1.py
-pkill -f UTD_v6_4.py
+pkill -f UTD_v7_1.py
 ```
 
 ## 📌 Main Code
@@ -77,6 +77,8 @@ pkill -f UTD_v6_4.py
 
 **UTD_v6_4**
 - RSI낙주 구매할때 유턴전략 사용
+- 트레이딩 스탑 0.75%
+- 코인별 추세이탈 매도 할건지 말건지
 
 ## 📈 Back Testing Code
 
@@ -89,3 +91,12 @@ pkill -f UTD_v6_4.py
 
 **UBT_v6_3**
 - 각종 파라미터 다 수정가능하게 만듬
+
+**UBT_v6_4**
+- 추세탈출 테스트
+
+**UBT_v6_5**
+- 눌림목 vs 돌파 테스트
+
+**UBT_v7_1**
+- 이때까지 모든테스트 통합
