@@ -10,13 +10,13 @@ cd Upbit
 ```bash
 ps -ef | grep python
 nohup python3 -u UM_v4_1.py > UM_v4_1.log 2>&1 &
-nohup python3 -u UTD_v7_1.py > UTD_v7_1.log 2>&1 &
+nohup python3 -u UTD_v7_2.py > UTD_v7_2.log 2>&1 &
 ```
 
 ## 정지
 ```bash
 pkill -f UM_v4_1.py
-pkill -f UTD_v7_1.py
+pkill -f UTD_v7_2.py
 ```
 
 ## 📌 Main Code
@@ -80,6 +80,9 @@ pkill -f UTD_v7_1.py
 - 트레이딩 스탑 0.75%
 - 코인별 추세이탈 매도 할건지 말건지
 
+**UTD_v7_1**
+- 최종 통합
+
 ## 📈 Back Testing Code
 
 **UBT_v6_1** 
@@ -100,3 +103,9 @@ pkill -f UTD_v7_1.py
 
 **UBT_v7_1**
 - 이때까지 모든테스트 통합
+
+**UBT_v7_2**
+- 트레일링 스탑 지점 바꿔서 테스트
+
+**UBT_v7_3**
+- 데드크로스가 났을때 얼마나 참을것인가 0.5, 1, 1.5

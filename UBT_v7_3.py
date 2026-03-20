@@ -25,7 +25,7 @@ def get_safe_ohlcv(ticker, days=7):
     return final_df.tail(count) 
 
 # --- [시뮬레이션 로직] ---
-def run_simulation(ticker, df, ma_short_len, ma_long_len, use_pullback, use_trend_exit, use_rsi_drop, vol_factor, vol_window, rsi_threshold=30, rsi_max=50, ts_act=1.0, ts_callback=0.75, stop_loss=-2.0, trend_exit_fee=-1.5):
+def run_simulation(ticker, df, ma_short_len, ma_long_len, use_pullback, use_trend_exit, use_rsi_drop, vol_factor, vol_window, ts_callback, trend_exit_fee, rsi_threshold=30, rsi_max=50, ts_act=1.0, stop_loss=-2.0):
     balance = 0
     avg_buy_price = 0
     max_price = 0
@@ -84,6 +84,7 @@ def run_simulation(ticker, df, ma_short_len, ma_long_len, use_pullback, use_tren
                 is_sell = True
             elif profit_rate <= stop_loss:
                 is_sell = True
+            # 💡 입력받은 trend_exit_fee 값을 적용
             elif use_trend_exit and (ma_short_curr < ma_long_curr and profit_rate < ts_act):
                 if profit_rate < trend_exit_fee:
                     is_sell = True
@@ -103,6 +104,8 @@ def run_simulation(ticker, df, ma_short_len, ma_long_len, use_pullback, use_tren
 
     return {
         '종목': ticker,
+        'TS콜백': ts_callback, 
+        '추세인내': trend_exit_fee, # 💡 추가된 출력 항목
         '매수타점': '눌림목' if use_pullback else '돌파',
         'MA선': f"{ma_short_len}/{ma_long_len}",
         '추세탈출': 'O' if use_trend_exit else 'X',
@@ -116,20 +119,19 @@ if __name__ == "__main__":
     pd.set_option('display.width', 1000) 
     
     # =====================================================================
-    # ⚙️ [백테스트 중앙 통제실] - 3대장 변수 총동원
+    # ⚙️ [백테스트 중앙 통제실]
     # =====================================================================
     target_tickers = ["KRW-BTC", "KRW-ETH", "KRW-SOL", "KRW-XRP", "KRW-NEAR", "KRW-LINK", "KRW-TAO"]
     
-    # 1. 매수 타점 2가지 (눌림목 vs 돌파)
+    ts_callback_options = [0.25, 0.5, 0.75]
+    
+    # 💡 새로 추가된 추세 이탈 퍼센트 테스트 변수
+    trend_exit_options = [-0.5, -1.0, -1.5]
+    
     pullback_options = [True, False]
-    
-    # 2. 이평선 2가지 (빠른선 3/15 vs 무거운선 5/20)
     ma_options = [(3, 15), (5, 20)] 
-    
-    # 3. 추세 탈출(손절) 2가지 (ON vs OFF)
     use_trend_exit_options = [True, False] 
     
-    # 고정 변수 (결과를 직관적으로 비교하기 위해 거래량 등은 1가지로 고정)
     rsi_drop_options = [True] 
     vol_factor_options = [1.0] 
     vol_window_options = [10]
@@ -137,7 +139,7 @@ if __name__ == "__main__":
     ts_act_dict = {"KRW-TAO": 1.0, "KRW-BTC":1.0, "KRW-ETH":1.5, "KRW-SOL":1.5, "KRW-XRP":1.5, "KRW-NEAR":1.5, "KRW-LINK":1.0}
     # =====================================================================
 
-    print("🚀 [UBT_v7_Ultimate] 모든 전략의 교차 검증을 시작합니다...\n")
+    print("🚀 [UBT_TrendExit_Test] 추세 이탈 인내심(-0.5, -1.0, -1.5) 백테스트 시작...\n")
     all_results = []
     
     for ticker in target_tickers:
@@ -155,39 +157,48 @@ if __name__ == "__main__":
         _loss = down.abs().ewm(com=13, min_periods=14).mean()
         df['rsi'] = 100 - (100 / (1 + (_gain / _loss)))
 
-        for use_pullback in pullback_options:
-            for ma_short, ma_long in ma_options:
-                df['ma_short'] = df['close'].rolling(window=ma_short).mean()
-                df['ma_long'] = df['close'].rolling(window=ma_long).mean()
-                
-                for use_trend_exit in use_trend_exit_options:
-                    for vol_win in vol_window_options:
-                        df['vol_avg'] = df['volume'].rolling(window=vol_win).mean()
-                        
-                        for use_rsi in rsi_drop_options:
-                            for v_factor in vol_factor_options:
-                                result = run_simulation(
-                                    ticker=ticker, 
-                                    df=df, 
-                                    ma_short_len=ma_short,
-                                    ma_long_len=ma_long,
-                                    use_pullback=use_pullback, 
-                                    use_trend_exit=use_trend_exit,
-                                    use_rsi_drop=use_rsi,
-                                    vol_factor=v_factor,
-                                    vol_window=vol_win, 
-                                    ts_act=ts_act_dict.get(ticker, 1.0)
-                                )
-                                if result: all_results.append(result)
+        for ts_cb in ts_callback_options: 
+            for use_pullback in pullback_options:
+                for ma_short, ma_long in ma_options:
+                    df['ma_short'] = df['close'].rolling(window=ma_short).mean()
+                    df['ma_long'] = df['close'].rolling(window=ma_long).mean()
+                    
+                    for use_trend_exit in use_trend_exit_options:
+                        for t_exit in trend_exit_options: # 💡 추세 인내심 루프 추가
+                            
+                            # '추세탈출'이 X(False)일 때는 t_exit 값이 무의미하므로 중복 데이터 생성을 막기 위해 패스
+                            if not use_trend_exit and t_exit != -0.5:
+                                continue
+
+                            for vol_win in vol_window_options:
+                                df['vol_avg'] = df['volume'].rolling(window=vol_win).mean()
+                                
+                                for use_rsi in rsi_drop_options:
+                                    for v_factor in vol_factor_options:
+                                        result = run_simulation(
+                                            ticker=ticker, 
+                                            df=df, 
+                                            ma_short_len=ma_short,
+                                            ma_long_len=ma_long,
+                                            use_pullback=use_pullback, 
+                                            use_trend_exit=use_trend_exit,
+                                            use_rsi_drop=use_rsi,
+                                            vol_factor=v_factor,
+                                            vol_window=vol_win, 
+                                            ts_callback=ts_cb, 
+                                            trend_exit_fee=t_exit, # 💡 함수에 전달
+                                            ts_act=ts_act_dict.get(ticker, 1.0)
+                                        )
+                                        if result: all_results.append(result)
 
     if all_results:
         df_summary = pd.DataFrame(all_results)
         
-        # 💡 [정렬 마법] 1차: 종목별(가나다순) -> 2차: 수익률 높은 순으로 줄세우기
         df_sorted = df_summary.sort_values(by=['종목', '총수익(%)'], ascending=[True, False])
         
-        columns_order = ['종목', '매수타점', 'MA선', '추세탈출', '총매수', '승률(%)', '총수익(%)']
+        # 💡 컬럼 순서에 '추세인내' 추가
+        columns_order = ['종목', 'TS콜백', '추세인내', '매수타점', 'MA선', '추세탈출', '총매수', '승률(%)', '총수익(%)']
         df_sorted = df_sorted[columns_order]
         
-        print("\n--- 📊 전략 조합별 랭킹 결과 (종목별 수익률 1등~8등) ---")
+        print("\n--- 📊 TS콜백 & 추세 인내심(-0.5/-1.0/-1.5) 조합별 랭킹 결과 ---")
         print(df_sorted.to_string(index=False))

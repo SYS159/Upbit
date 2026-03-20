@@ -15,28 +15,27 @@ webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
 upbit = pyupbit.Upbit(access, secret)
 
 # =====================================================================
-# 🛡️ [V7.1 절대 방어 파라미터 세팅] - 백테스트 1위 데이터 100% 반영
+# 💎 [V7.0 최종 완성 파라미터] - 백테스트 1등 데이터 100% 반영
 # =====================================================================
 strategy_config = {
-    # 📉 [눌림목 매수 그룹] - 돌파할 때 쫓아가지 않고, 지지선에서 안전하게 줍는다.
-    "KRW-BTC":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.0, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": False, "use_pullback": True},
-    "KRW-LINK": {"ma_short": 5, "ma_long": 20, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.0, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": True,  "use_pullback": True},
-    "KRW-XRP":  {"ma_short": 5, "ma_long": 20, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": False, "use_pullback": True},
+    # ⚡ [0.25 짧게 치고 빠지기 그룹] - 반등이 짧고 휩쏘가 심한 코인들
+    "KRW-TAO":  {"ma_short": 3, "ma_long": 15, "use_pullback": False, "use_trend_exit": True,  "ts_activation": 1.0, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
+    "KRW-SOL":  {"ma_short": 3, "ma_long": 15, "use_pullback": False, "use_trend_exit": True,  "ts_activation": 1.5, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
+    "KRW-ETH":  {"ma_short": 3, "ma_long": 15, "use_pullback": False, "use_trend_exit": True,  "ts_activation": 1.5, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 60, "use_rsi_drop": True, "vol_factor": 1.0},
+    "KRW-XRP":  {"ma_short": 3, "ma_long": 15, "use_pullback": True,  "use_trend_exit": True,  "ts_activation": 1.5, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
+    "KRW-BTC":  {"ma_short": 3, "ma_long": 15, "use_pullback": True,  "use_trend_exit": False, "ts_activation": 1.0, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
 
-    # 🚀 [돌파 매수 그룹] - 힘이 붙을 때 시원하게 올라탄다 (눌림목 기다리면 기회 놓침)
-    "KRW-TAO":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 60, "ts_activation": 1.0, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": True,  "use_pullback": False},
-    "KRW-SOL":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": True,  "use_pullback": False},
-    "KRW-NEAR": {"ma_short": 5, "ma_long": 20, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 60, "ts_activation": 1.5, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": False, "use_pullback": False},
-    "KRW-ETH":  {"ma_short": 3, "ma_long": 15, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "ts_activation": 1.5, "use_rsi_drop": True, "vol_factor": 1.0, "use_trend_exit": False, "use_pullback": False}
+    # 🌊 [0.50 중간 여유 그룹] - 파동이 두꺼워 약간의 여유가 필요한 코인들
+    "KRW-NEAR": {"ma_short": 5, "ma_long": 20, "use_pullback": False, "use_trend_exit": False, "ts_activation": 1.5, "ts_callback": 0.50, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
+    "KRW-LINK": {"ma_short": 5, "ma_long": 20, "use_pullback": True,  "use_trend_exit": True,  "ts_activation": 1.0, "ts_callback": 0.50, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0}
 }
 
 target_tickers = list(strategy_config.keys())
 
 # --- [공통 파라미터] ---
-ts_callback = 0.75
 stop_loss = -2.0
-trend_exit_fee = -1.0
-fixed_buy_amount = 250000  # 종목당 25만 원
+trend_exit_fee = -1.0 # 💡 -1.5 쿨타임 대신 빠른 칼손절 유지
+fixed_buy_amount = 250000  
 
 max_price_dict = {}
 
@@ -61,8 +60,8 @@ def get_rsi(ticker):
     _loss = down.abs().ewm(com=13, min_periods=14).mean()
     return 100 - (100 / (1 + (_gain / _loss)))
 
-print("🚀 UTH_v7_1 실전 가동 시작 (하이브리드 절대 방어 시스템)")
-send_discord_msg("🤖 **UTH_v7_1** 가동 시작\n- 방어막 전개 완료: 코인별 눌림목/돌파 하이브리드 매수\n- 무거운 이평선 방어 및 추세탈출 최적화 완료")
+print("🚀 UTH_v7_Final 실전 가동 시작 (코인별 맞춤 TS콜백 탑재)")
+send_discord_msg("🤖 **UTH_v7_Final** 가동 시작\n- 최종 튜닝 완료: 코인별 개별 TS콜백(0.25 / 0.50) 탑재\n- 하락장 철벽 방어 및 휩쏘 차단 로직 적용")
 
 while True:
     try:
@@ -88,27 +87,24 @@ while True:
             
             balance = upbit.get_balance(ticker)
             
-            # --- [매수 로직: 하이브리드 타점 적용] ---
+            # --- [매수 로직] ---
             if balance == 0:
                 curr_low = df['low'].iloc[-1]
                 curr_open = df['open'].iloc[-1]
                 curr_close = df['close'].iloc[-1]
 
                 if config['use_pullback']:
-                    # 📉 [눌림목 매수] 정배열 상승 중, 가격이 단기선 근처로 눌렸다가 양봉 지지 확인 시
                     cond_gold = (ma_short.iloc[-1] > ma_long.iloc[-1] and 
                                  curr_low <= ma_short.iloc[-1] * 1.002 and  
                                  curr_close > curr_open and             
                                  curr_rsi < config['rsi_max'])
                 else:
-                    # 🚀 [돌파 매수] 거래량이 터지며 골든크로스가 일어나는 순간
                     cond_gold = (ma_short.iloc[-2] < ma_long.iloc[-2] and 
                                  ma_short.iloc[-1] > ma_long.iloc[-1] and 
                                  df['volume'].iloc[-1] > vol_avg.iloc[-1] * config['vol_factor'] and
                                  curr_rsi < config['rsi_max'] and
                                  curr_close > curr_open)
 
-                # RSI 유턴 돌파 로직
                 cond_rsi = (prev_rsi < config['rsi_threshold'] and curr_rsi >= config['rsi_threshold']) if config['use_rsi_drop'] else False
 
                 if cond_gold or cond_rsi:
@@ -124,16 +120,16 @@ while True:
                             
                         send_discord_msg(f"✅ **[{ticker}] 매수**\n사유: {reason}")
 
-            # --- [매도 로직: 추세 탈출(ON/OFF) 최적화] ---
+            # --- [매도 로직] ---
             elif balance > 0:
                 avg_buy_price = upbit.get_avg_buy_price(ticker)
-                
                 if avg_buy_price == 0: continue
                     
                 curr_price = pyupbit.get_current_price(ticker)
                 
                 profit_rate = ((curr_price - avg_buy_price) / avg_buy_price) * 100
                 ts_act = config['ts_activation']
+                ts_cb = config['ts_callback'] # 💡 코인별 설정된 콜백 값 가져오기
                 
                 if ticker not in max_price_dict: max_price_dict[ticker] = curr_price
                 max_price_dict[ticker] = max(max_price_dict[ticker], curr_price)
@@ -143,8 +139,9 @@ while True:
 
                 is_sell, sell_reason = False, ""
                 
-                if max_profit_rate >= ts_act and drop_from_max >= ts_callback:
-                    is_sell, sell_reason = True, f"TS 익절(최고 {max_profit_rate:.2f}% 도달 후 하락)🔺"
+                # 💡 개별 ts_cb 적용 완료
+                if max_profit_rate >= ts_act and drop_from_max >= ts_cb:
+                    is_sell, sell_reason = True, f"TS 익절(최고 {max_profit_rate:.2f}% 도달 후 {ts_cb}% 하락)🔺"
                 elif profit_rate <= stop_loss:
                     is_sell, sell_reason = True, "손절(-2%)🔻"
                 elif config['use_trend_exit'] and (ma_short.iloc[-1] < ma_long.iloc[-1]) and (profit_rate < ts_act):
