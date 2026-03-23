@@ -15,26 +15,26 @@ webhook_url = os.getenv("DISCORD_WEBHOOK_URL")
 upbit = pyupbit.Upbit(access, secret)
 
 # =====================================================================
-# 💎 [V7.0 최종 완성 파라미터] - 백테스트 1등 데이터 100% 반영
+# 💎 [V7.4 최종 완성 파라미터] - BTC 매크로 필터 탑재
 # =====================================================================
 strategy_config = {
-    # ⚡ [0.25 짧게 치고 빠지기 그룹] - 반등이 짧고 휩쏘가 심한 코인들
-    "KRW-TAO":  {"ma_short": 3, "ma_long": 15, "use_pullback": False, "use_trend_exit": True,  "ts_activation": 1.0, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
-    "KRW-SOL":  {"ma_short": 3, "ma_long": 15, "use_pullback": False, "use_trend_exit": True,  "ts_activation": 1.5, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
-    "KRW-ETH":  {"ma_short": 3, "ma_long": 15, "use_pullback": False, "use_trend_exit": True,  "ts_activation": 1.5, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 60, "use_rsi_drop": True, "vol_factor": 1.0},
-    "KRW-XRP":  {"ma_short": 3, "ma_long": 15, "use_pullback": True,  "use_trend_exit": True,  "ts_activation": 1.5, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
-    "KRW-BTC":  {"ma_short": 3, "ma_long": 15, "use_pullback": True,  "use_trend_exit": False, "ts_activation": 1.0, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
+    # ⚡ [0.25 짧게 치고 빠지기 그룹]
+    "KRW-TAO":  {"ma_short": 3, "ma_long": 15, "use_pullback": False, "use_trend_exit": True,  "ts_activation": 1.0, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0, "use_btc_filter": False}, # 💡 펌핑 코인: BTC 필터 OFF
+    "KRW-SOL":  {"ma_short": 3, "ma_long": 15, "use_pullback": False, "use_trend_exit": True,  "ts_activation": 1.5, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0, "use_btc_filter": True},  # 🛡️ BTC 필터 ON
+    "KRW-ETH":  {"ma_short": 3, "ma_long": 15, "use_pullback": False, "use_trend_exit": True,  "ts_activation": 1.5, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 60, "use_rsi_drop": True, "vol_factor": 1.0, "use_btc_filter": True},  # 🛡️ BTC 필터 ON
+    "KRW-XRP":  {"ma_short": 3, "ma_long": 15, "use_pullback": True,  "use_trend_exit": True,  "ts_activation": 1.5, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0, "use_btc_filter": False}, # 💡 독자 무빙: BTC 필터 OFF
+    "KRW-BTC":  {"ma_short": 3, "ma_long": 15, "use_pullback": True,  "use_trend_exit": False, "ts_activation": 1.0, "ts_callback": 0.25, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0, "use_btc_filter": True},  # 🛡️ BTC 본인도 필터 ON
 
-    # 🌊 [0.50 중간 여유 그룹] - 파동이 두꺼워 약간의 여유가 필요한 코인들
-    "KRW-NEAR": {"ma_short": 5, "ma_long": 20, "use_pullback": False, "use_trend_exit": False, "ts_activation": 1.5, "ts_callback": 0.50, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0},
-    "KRW-LINK": {"ma_short": 5, "ma_long": 20, "use_pullback": True,  "use_trend_exit": True,  "ts_activation": 1.0, "ts_callback": 0.50, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0}
+    # 🌊 [0.50 중간 여유 그룹]
+    "KRW-NEAR": {"ma_short": 5, "ma_long": 20, "use_pullback": False, "use_trend_exit": False, "ts_activation": 1.5, "ts_callback": 0.50, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0, "use_btc_filter": True},  # 🛡️ BTC 필터 ON
+    "KRW-LINK": {"ma_short": 5, "ma_long": 20, "use_pullback": True,  "use_trend_exit": True,  "ts_activation": 1.0, "ts_callback": 0.50, "vol_window": 10, "rsi_threshold": 30, "rsi_max": 50, "use_rsi_drop": True, "vol_factor": 1.0, "use_btc_filter": True}   # 🛡️ BTC 필터 ON
 }
 
 target_tickers = list(strategy_config.keys())
 
 # --- [공통 파라미터] ---
 stop_loss = -2.0
-trend_exit_fee = -1.0 # 💡 -1.5 쿨타임 대신 빠른 칼손절 유지
+trend_exit_fee = -1.0
 fixed_buy_amount = 230000  
 
 max_price_dict = {}
@@ -60,12 +60,23 @@ def get_rsi(ticker):
     _loss = down.abs().ewm(com=13, min_periods=14).mean()
     return 100 - (100 / (1 + (_gain / _loss)))
 
-print("🚀 UTH_v7_Final 실전 가동 시작 (코인별 맞춤 TS콜백 탑재)")
-send_discord_msg("🤖 **UTH_v7_Final** 가동 시작\n- 최종 튜닝 완료: 코인별 개별 TS콜백(0.25 / 0.50) 탑재\n- 하락장 철벽 방어 및 휩쏘 차단 로직 적용")
+print("🚀 UTD_v7_4 실전 가동 시작 (글로벌 BTC 매크로 필터 탑재)")
+send_discord_msg("🤖 **UTD_v7_4** 가동 시작\n- 🛡️ 대장주(BTC) 시가 기준 매크로 필터 작동 중\n- TAO/XRP는 필터 예외(야수의 심장 모드)")
 
 while True:
     try:
         now = datetime.now()
+        
+        # =====================================================================
+        # 🌍 [글로벌 BTC 필터] 실시간 비트코인 일봉(9시 시가 대비) 양봉/음봉 판별
+        # =====================================================================
+        btc_daily = pyupbit.get_ohlcv("KRW-BTC", interval="day", count=1)
+        if btc_daily is not None and not btc_daily.empty:
+            btc_today_open = btc_daily['open'].iloc[-1]
+            btc_curr_price = pyupbit.get_current_price("KRW-BTC")
+            btc_is_positive = btc_curr_price >= btc_today_open
+        else:
+            btc_is_positive = True # 데이터 수신 에러 시 보수적으로 통과 처리
             
         for ticker in target_tickers:
             config = strategy_config[ticker]
@@ -89,6 +100,10 @@ while True:
             
             # --- [매수 로직] ---
             if balance == 0:
+                # 🛡️ [핵심 방어막] 비트코인 필터 적용 대상인데, BTC가 9시 시가보다 낮다면 즉시 패스!
+                if config['use_btc_filter'] and not btc_is_positive:
+                    continue
+
                 curr_low = df['low'].iloc[-1]
                 curr_open = df['open'].iloc[-1]
                 curr_close = df['close'].iloc[-1]
@@ -129,7 +144,7 @@ while True:
                 
                 profit_rate = ((curr_price - avg_buy_price) / avg_buy_price) * 100
                 ts_act = config['ts_activation']
-                ts_cb = config['ts_callback'] # 💡 코인별 설정된 콜백 값 가져오기
+                ts_cb = config['ts_callback'] 
                 
                 if ticker not in max_price_dict: max_price_dict[ticker] = curr_price
                 max_price_dict[ticker] = max(max_price_dict[ticker], curr_price)
@@ -139,7 +154,6 @@ while True:
 
                 is_sell, sell_reason = False, ""
                 
-                # 💡 개별 ts_cb 적용 완료
                 if max_profit_rate >= ts_act and drop_from_max >= ts_cb:
                     is_sell, sell_reason = True, f"TS 익절(최고 {max_profit_rate:.2f}% 도달 후 {ts_cb}% 하락)🔺"
                 elif profit_rate <= stop_loss:

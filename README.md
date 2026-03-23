@@ -9,14 +9,14 @@ cd Upbit
 ## 🚀 실행
 ```bash
 ps -ef | grep python
-nohup python3 -u UM_v4_1.py > UM_v4_1.log 2>&1 &
-nohup python3 -u UTD_v7_2.py > UTD_v7_2.log 2>&1 &
+nohup python3 -u UM_v4_2.py > UM_v4_2.log 2>&1 &
+nohup python3 -u UTD_v7_4.py > UTD_v7_4.log 2>&1 &
 ```
 
 ## 정지
 ```bash
-pkill -f UM_v4_1.py
-pkill -f UTD_v7_2.py
+pkill -f UM_v4_2.py
+pkill -f UTD_v7_4.py
 ```
 
 ## 📌 Main Code
@@ -31,6 +31,10 @@ pkill -f UTD_v7_2.py
 
 **UM_v4_1**
 - 일일 수익률 분석
+
+**UM_v4_2**
+- 보유한거 없으면 알림 X
+- 비트코인 양/음 알림
 
 ---
 
@@ -83,6 +87,9 @@ pkill -f UTD_v7_2.py
 **UTD_v7_1**
 - 최종 통합
 
+**UTD_v7_4**
+- 파라미터 추가 및 수정
+
 ## 📈 Back Testing Code
 
 **UBT_v6_1** 
@@ -109,3 +116,6 @@ pkill -f UTD_v7_2.py
 
 **UBT_v7_3**
 - 데드크로스가 났을때 얼마나 참을것인가 0.5, 1, 1.5
+
+**UBT_v7_4**
+- 비트코인 기준 음봉이면 매수 X
