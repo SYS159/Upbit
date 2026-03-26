@@ -10,13 +10,13 @@ cd Upbit
 ```bash
 ps -ef | grep python
 nohup python3 -u UM_v4_2.py > UM_v4_2.log 2>&1 &
-nohup python3 -u UTD_v7_4.py > UTD_v7_4.log 2>&1 &
+nohup python3 -u UTD_v8.py > UTD_v8.log 2>&1 &
 ```
 
 ## 정지
 ```bash
 pkill -f UM_v4_2.py
-pkill -f UTD_v7_4.py
+pkill -f UTD_v8.py
 ```
 
 ## 📌 Main Code
@@ -89,6 +89,9 @@ pkill -f UTD_v7_4.py
 
 **UTD_v7_4**
 - 파라미터 추가 및 수정
+
+**UTD_v8**
+- 15분봉 / 1시간봉 으로 변경
 
 ## 📈 Back Testing Code
 
