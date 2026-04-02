@@ -10,13 +10,13 @@ cd Upbit
 ```bash
 ps -ef | grep python
 nohup python3 -u UM_v4_2.py > UM_v4_2.log 2>&1 &
-nohup python3 -u UTD_v8.py > UTD_v8.log 2>&1 &
+nohup python3 -u UTD_v8_2.py > UTD_v8_2.log 2>&1 &
 ```
 
 ## 정지
 ```bash
 pkill -f UM_v4_2.py
-pkill -f UTD_v8.py
+pkill -f UTD_v8_2.py
 ```
 
 ## 📌 Main Code

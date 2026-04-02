@@ -214,7 +214,7 @@ while True:
                          f"💰 **현재 총 자산**: `{int(total_eval):,}원` \n" \
                          f"☀️ **오늘 수익 (9시~)**: `{int(daily_diff):+,}원` (**{daily_profit_rate:+.2f}%**)\n" \
                          f"📅 **주간 수익 (월~)**: `{int(weekly_diff):+,}원` (**{weekly_profit_rate:+.2f}%**)\n" \
-                         f"👑 **비트코인(BTC) 일봉**: {btc_status}" # 💡 메시지 맨 아랫줄에 추가
+                        #  f"👑 **비트코인(BTC) 일봉**: {btc_status}" # 💡 메시지 맨 아랫줄에 추가
                 
                 send_discord_msg(status)
                 last_sent_hm = current_hm
