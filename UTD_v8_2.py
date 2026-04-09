@@ -36,7 +36,7 @@ target_tickers = list(strategy_config.keys())
 
 # --- [공통 파라미터] ---
 stop_loss = -2.0
-fixed_buy_amount = 230000  
+fixed_buy_amount = 205200  
 
 max_price_dict = {}
 

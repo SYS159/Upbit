@@ -9,13 +9,13 @@ cd Upbit
 ## 🚀 실행
 ```bash
 ps -ef | grep python
-nohup python3 -u UM_v4_2.py > UM_v4_2.log 2>&1 &
+nohup python3 -u UM_v4_3.py > UM_v4_3.log 2>&1 &
 nohup python3 -u UTD_v8_2.py > UTD_v8_2.log 2>&1 &
 ```
 
 ## 정지
 ```bash
-pkill -f UM_v4_2.py
+pkill -f UM_v4_3.py
 pkill -f UTD_v8_2.py
 ```
 
@@ -33,8 +33,10 @@ pkill -f UTD_v8_2.py
 - 일일 수익률 분석
 
 **UM_v4_2**
-- 보유한거 없으면 알림 X
 - 비트코인 양/음 알림
+
+**UM_v4_3**
+- 보유한거 없으면 알림 X
 
 ---
 
@@ -93,6 +95,12 @@ pkill -f UTD_v8_2.py
 **UTD_v8**
 - 15분봉 / 1시간봉 으로 변경
 
+**UTD_v8_1**
+- ?
+
+**UTD_v8_2**
+- ?
+
 ## 📈 Back Testing Code
 
 **UBT_v6_1** 
@@ -122,3 +130,9 @@ pkill -f UTD_v8_2.py
 
 **UBT_v7_4**
 - 비트코인 기준 음봉이면 매수 X
+
+**UBT_v8_1**
+- ?
+
+**UBT_v8_2**
+- ?
